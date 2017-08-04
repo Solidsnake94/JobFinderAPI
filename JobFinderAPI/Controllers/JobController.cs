@@ -81,7 +81,7 @@ namespace JobFinderAPI.Controllers
 
         [Route("pending/page")]
         [HttpGet]
-        public async Task<IHttpActionResult> GetPendingJobs(int  offset, int limit, string filter, bool orderByDesc)
+        public async Task<IHttpActionResult> GetPendingJobs(int  offset, int limit, string filter, bool orderByAscen)
         {
 
             if (!ModelState.IsValid)
@@ -90,7 +90,7 @@ namespace JobFinderAPI.Controllers
             }
 
             // get the paged job with paging details
-            var pagedJobResult = await _repo.GetPendingJobs(offset, limit, filter, orderByDesc);
+            var pagedJobResult = await _repo.GetPendingJobs(offset, limit, filter, orderByAscen);
 
             return Ok(pagedJobResult);
         }
@@ -116,7 +116,6 @@ namespace JobFinderAPI.Controllers
 
         [Route("created")]
         // Create a new job by employer
-        //[Authorize]
         [HttpPost]
         public async Task<IHttpActionResult> CreateJob(Job job)
         {
@@ -125,9 +124,9 @@ namespace JobFinderAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-           await generateFakeJobs();
+           //await generateFakeJobs();
 
-           // await _repo.CreateJob(job);
+            await _repo.CreateJob(job);
 
             return Ok("Created new Job");
         }
@@ -148,6 +147,55 @@ namespace JobFinderAPI.Controllers
         public async Task<IHttpActionResult> DeleteCreatedJob(int id)
         {
             return Ok("Updated job");
+        }
+
+
+
+        [Route("application")]
+        [HttpGet]
+        public async Task<IHttpActionResult> GetJobApplicationsForJobOwner(int jobId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var jobApplications = await _repo.GetJobApplicationsForJobOwner(jobId);
+
+            return Ok(jobApplications);
+        }
+
+        [Route("application/applicant")]
+        [HttpGet]
+        public async Task<IHttpActionResult> GetJobApplicationsForApplicant(int applicantId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var jobApplications = await _repo.GetJobApplicationsForApplicant(applicantId);
+
+            return Ok(jobApplications);
+        }
+
+        public async Task<IHttpActionResult> CreateJobApplication(JobApplication jobApplication)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var success = await _repo.CreateJobApplication(jobApplication.JobId, jobApplication.ApplicantId);
+
+            if (success)
+            {
+                return Ok("Created new job application");
+            }
+            else
+            {
+                return BadRequest("Failed to create a new job application");
+            }
         }
 
 

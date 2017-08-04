@@ -171,6 +171,7 @@
     <Compile Include="Entities\Job.cs" />
     <Compile Include="Entities\JobApplication.cs" />
     <Compile Include="Entities\UserDetail.cs" />
+    <Compile Include="Extensions\LinqExtensions.cs" />
     <Compile Include="Migrations\201706070403280_InitialCreate.cs" />
     <Compile Include="Migrations\201706070403280_InitialCreate.Designer.cs">
       <DependentUpon>201706070403280_InitialCreate.cs</DependentUpon>

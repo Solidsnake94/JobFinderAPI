@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web;
 using JobFinderAPI.Models;
 using System.Reflection;
+using JobFinderAPI.Extensions;
 
 namespace JobFinderAPI.Repositories
 {
@@ -18,6 +19,8 @@ namespace JobFinderAPI.Repositories
         {
             dbContext = new AuthContext();
         }
+
+        // ====== JOB METHODS
 
         public async Task<IQueryable<Job>> GetAllPendingJobs()
         {
@@ -32,43 +35,17 @@ namespace JobFinderAPI.Repositories
             }
         }
 
-
-        public async Task<PagedResult<Job>> GetPendingJobs(int offset = 0, int limit = 10, string filter = "DateStart", bool orderByDesc = false)
+        public async Task<PagedResult<Job>> GetPendingJobs(int offset = 0, int limit = 10, string filter = "DateStart", bool orderByAscen = true)
         {
             try
             {
-                // get the class property for given class
-                var orderByProperty = typeof(Job).GetProperty(filter);
+                IQueryable<Job> jobs = dbContext.Jobs.Where(j => j.Status == "PENDING").OrderByField(filter, orderByAscen).Skip(offset).Take(limit);
 
-                // get the total amount of jobs in table
-                var totalJobs = dbContext.Jobs.Count();
-
-                // get the jobs page according to set parameters
-                var jobs = dbContext.Jobs
-                            .Where(j => j.Status == "PENDING");
-
-
-                // set in what order the jobs are sorted 
-                switch (orderByDesc)
-                {
-                    case false:
-                        jobs.OrderBy(j => orderByProperty.GetValue(j, null));
-                        break;
-
-                    case true:
-                        jobs.OrderByDescending(j => orderByProperty.GetValue(j, null));
-                        break;
-                };
-
-                // SKIP the amount of jobs specified by the OFFSET and TAKE less or equal amount of jobs specified by the LIMIT
-                jobs.Skip(offset)
-                     .Take(limit);
-
-                //get the amount of jobs returned for the page
-                var jobsReturned = jobs.Count();
+                int totalJobs = dbContext.Jobs.Count();
+                int jobsReturned = jobs.Count();
 
                 // set the return PageResult with pages IQuerable and extra pagind details 
-                var pagedResult = new PagedResult<Job>(jobs, offset, limit, filter, orderByDesc, totalJobs, jobsReturned);
+                var pagedResult = new PagedResult<Job>(jobs, offset, limit, filter, orderByAscen, totalJobs, jobsReturned);
 
                 return pagedResult;
             }
@@ -78,7 +55,6 @@ namespace JobFinderAPI.Repositories
                 throw e;
             }
         }
-
 
         public async Task<bool> CreateJob(Job job)
         {
@@ -113,20 +89,73 @@ namespace JobFinderAPI.Repositories
             }
         }
 
+        // ======= END JOB METHODS =================
 
 
-      
+
+
+
+        // --------------------------------------------------------------------
+
+
+
+
+        // ======= JOB_APPLICATION METHODS =================
+
+        public async Task<IQueryable<JobApplication>> GetJobApplicationsForApplicant(int applicantId)
+        {
+            try
+            {
+                var applications = dbContext.JobsApplications.Where(j => j.ApplicantId == applicantId);
+                return applications;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        // Get all applications where its specific job id
+        public async Task<IQueryable<JobApplication>> GetJobApplicationsForJobOwner(int jobId)
+        {
+            try
+            {
+                var applications = dbContext.JobsApplications.Where(j => j.JobId == jobId);
+                return applications;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
 
         public async Task<bool> CreateJobApplication(int jobId, int jobApplicationUserId)
         {
             try
             {
+                var hasJobId = dbContext.Jobs.Any(j => j.Id == jobId);
+                var hasApplicantId = dbContext.UsersDetails.Any(u => u.Id == jobApplicationUserId);
+
+                // if cant find job or applicant id return false
+                if (!hasJobId || !hasApplicantId)
+                {
+                    return false;
+                }
+
+                // if application is already existing return false
+                var existingApplication = dbContext.JobsApplications.Any(a => (a.JobId == jobId && a.Id == jobApplicationUserId));
+                if (existingApplication) {
+
+                    return false;
+
+                }
+
+                // Else continue and create jobApplication
                 var jobApplication = new JobApplication() {
 
                     JobId = jobId,
                     ApplicantId = jobApplicationUserId,
                     Status = "PENDING"
-
                 };
 
                 dbContext.JobsApplications.Add(jobApplication);
@@ -138,7 +167,6 @@ namespace JobFinderAPI.Repositories
             {
                 throw e;
             }
-
         }
 
         public async Task<bool> UpdateJobApplicationStatus(int jobApplicationId, string status)
@@ -158,7 +186,8 @@ namespace JobFinderAPI.Repositories
             }
         }
 
-        
+        // ====== END JOB_APPLICATION METHODS =================
+
 
 
     }

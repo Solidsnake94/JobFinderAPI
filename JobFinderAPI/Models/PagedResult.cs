@@ -13,7 +13,7 @@ namespace JobFinderAPI.Models
             public int Offset { get; set; }
             public int Limit { get; set; }
             public string Filter { get; set; }
-            public bool OrderByDescending { get; set; }
+            public bool OrderByAscending { get; set; }
             public int Total { get; set; }
             public int Returned { get; set; }
         }
@@ -23,7 +23,7 @@ namespace JobFinderAPI.Models
 
 
         // Constructor of the PagedResult
-        public PagedResult(IQueryable<T> items, int offset, int limit, string filter, bool orderByDesc, int total, int returned)
+        public PagedResult(IQueryable<T> items, int offset, int limit, string filter, bool orderByAscen, int total, int returned)
         {
             Data = items;
             Paging = new PagingInfo
@@ -31,7 +31,7 @@ namespace JobFinderAPI.Models
                 Offset = offset,
                 Limit = limit,
                 Filter = filter,
-                OrderByDescending = orderByDesc,
+                OrderByAscending = orderByAscen,
                 Total = total,
                 Returned = returned
             };
