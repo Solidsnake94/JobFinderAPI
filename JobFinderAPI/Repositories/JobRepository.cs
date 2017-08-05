@@ -56,6 +56,18 @@ namespace JobFinderAPI.Repositories
             }
         }
 
+        public async Task<Job> GetCreatedJobByJobId(int jobId) {
+            try
+            {
+                var job = dbContext.Jobs.SingleOrDefault(j => j.Id == jobId);
+                return job;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
         public async Task<bool> CreateJob(Job job)
         {
             try

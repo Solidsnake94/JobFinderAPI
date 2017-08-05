@@ -95,6 +95,22 @@ namespace JobFinderAPI.Controllers
             return Ok(pagedJobResult);
         }
 
+        // Get the created job by the job id in the db
+        [Route("created")]
+        [HttpGet]
+        public async Task<IHttpActionResult> GetCreatedJobById(int jobId)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var job = await _repo.GetCreatedJobByJobId(jobId);
+
+            return Ok(job);
+        }
+
 
         // Get all created jobs by for specific employer by employer id
         [Route("created/employer")]
@@ -105,13 +121,7 @@ namespace JobFinderAPI.Controllers
         }
 
 
-        // Get the created job by the job id in the db
-        [Route("created")]
-        [HttpGet]
-        public async Task<IHttpActionResult> GetCreatedJobById(int id)
-        {
-            return Ok();
-        }
+        
 
 
         [Route("created")]
