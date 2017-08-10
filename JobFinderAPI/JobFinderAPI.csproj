@@ -188,6 +188,10 @@
     <Compile Include="Migrations\201707121723323_AddLocationCoords.Designer.cs">
       <DependentUpon>201707121723323_AddLocationCoords.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201708101608382_Job-Datetime.cs" />
+    <Compile Include="Migrations\201708101608382_Job-Datetime.Designer.cs">
+      <DependentUpon>201708101608382_Job-Datetime.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\PagedResult.cs" />
     <Compile Include="Models\UserModel.cs" />
@@ -218,6 +222,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201707121723323_AddLocationCoords.resx">
       <DependentUpon>201707121723323_AddLocationCoords.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708101608382_Job-Datetime.resx">
+      <DependentUpon>201708101608382_Job-Datetime.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
