@@ -1,10 +1,8 @@
 ﻿using JobFinderAPI.Entities;
 using JobFinderAPI.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace JobFinderAPI.Repositories
 {
@@ -18,7 +16,7 @@ namespace JobFinderAPI.Repositories
         }
 
 
-        public async Task<bool> AddUserDetail(string id,  UserModel userModel)
+        public async Task<bool> AddUserDetail(string id, UserModel userModel)
         {
             try
             {
@@ -41,6 +39,21 @@ namespace JobFinderAPI.Repositories
             {
                 throw e;
             }
+        }
+
+        public async Task<UserDetail> GetUserDetailsById(int userId)
+        {
+
+            try
+            {
+                var user = dbContext.UsersDetails.SingleOrDefault(j => j.Id == userId);
+                return user;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
         }
     }
 }

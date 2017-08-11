@@ -179,6 +179,7 @@
     <Compile Include="Controllers\BaseApiController.cs" />
     <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\JobController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Entities\Category.cs" />
     <Compile Include="Entities\Job.cs" />
     <Compile Include="Entities\JobApplication.cs" />
