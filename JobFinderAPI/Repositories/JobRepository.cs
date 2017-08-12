@@ -1,12 +1,9 @@
 ﻿using JobFinderAPI.Entities;
+using JobFinderAPI.Extensions;
+using JobFinderAPI.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
-using JobFinderAPI.Models;
-using System.Reflection;
-using JobFinderAPI.Extensions;
 
 namespace JobFinderAPI.Repositories
 {
@@ -35,11 +32,11 @@ namespace JobFinderAPI.Repositories
             }
         }
 
-        public async Task<PagedResult<Job>> GetPendingJobs(int offset = 0, int limit = 10, string filter = "DateStart", bool orderByAscen = true)
+        public async Task<PagedResult<Job>> GetPendingJobs(int id, int offset = 0, int limit = 10, string filter = "DateStart", bool orderByAscen = true)
         {
             try
             {
-                IQueryable<Job> jobs = dbContext.Jobs.Where(j => j.Status == "PENDING").OrderByField(filter, orderByAscen).Skip(offset).Take(limit);
+                IQueryable<Job> jobs = dbContext.Jobs.Where(j => j.Status == "PENDING" && j.CreatedBy == id).OrderByField(filter, orderByAscen).Skip(offset).Take(limit);
 
                 int totalJobs = dbContext.Jobs.Count();
                 int jobsReturned = jobs.Count();
@@ -56,7 +53,24 @@ namespace JobFinderAPI.Repositories
             }
         }
 
-        public async Task<Job> GetCreatedJobByJobId(int jobId) {
+        public async Task<IQueryable<Job>> GetApprovedJobByUserId(int id, bool orderByAscen = true, string filter = "DateStart")
+        {
+            try
+            {
+                IQueryable<Job> jobs = dbContext.Jobs.Where(j => j.CreatedBy == id && j.Status == "APPROVED").OrderByField(filter, orderByAscen);
+
+
+                return jobs;
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+        }
+
+        public async Task<Job> GetCreatedJobByJobId(int jobId)
+        {
             try
             {
                 var job = dbContext.Jobs.SingleOrDefault(j => j.Id == jobId);
@@ -100,6 +114,29 @@ namespace JobFinderAPI.Repositories
                 throw e;
             }
         }
+
+        public async Task<bool> DeleteJob(int id)
+        {
+            try
+            {
+                var job = dbContext.Jobs.SingleOrDefault(j => j.Id == id);
+
+                if (job != null)
+                {
+                    dbContext.Jobs.Remove(job);
+
+                }
+                await dbContext.SaveChangesAsync();
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+
 
         // ======= END JOB METHODS =================
 
@@ -156,14 +193,16 @@ namespace JobFinderAPI.Repositories
 
                 // if application is already existing return false
                 var existingApplication = dbContext.JobsApplications.Any(a => (a.JobId == jobId && a.Id == jobApplicationUserId));
-                if (existingApplication) {
+                if (existingApplication)
+                {
 
                     return false;
 
                 }
 
                 // Else continue and create jobApplication
-                var jobApplication = new JobApplication() {
+                var jobApplication = new JobApplication()
+                {
 
                     JobId = jobId,
                     ApplicantId = jobApplicationUserId,
@@ -187,7 +226,7 @@ namespace JobFinderAPI.Repositories
             {
                 JobApplication jobApplication = dbContext.JobsApplications.SingleOrDefault(j => j.Id == jobApplicationId);
                 jobApplication.Status = status;
-                
+
                 await dbContext.SaveChangesAsync();
 
                 return true;

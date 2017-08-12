@@ -1,6 +1,5 @@
 ﻿using JobFinderAPI.Entities;
 using JobFinderAPI.Repositories;
-using Microsoft.AspNet.Identity;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -25,7 +24,7 @@ namespace JobFinderAPI.Controllers
             {
                 var titleP1Random = randomNumber.Next(titlesP1.Length - 1);
                 var titleP2Random = randomNumber.Next(titlesP2.Length - 1);
-                var createdBy = randomNumber.Next(1,12);
+                var createdBy = randomNumber.Next(1, 12);
                 var hours = randomNumber.Next(1, 100);
                 var categoryId = randomNumber.Next(1, 4);
                 var price = randomNumber.Next(100, 10000);
@@ -44,12 +43,12 @@ namespace JobFinderAPI.Controllers
                     Hours = hours,
                     CategoryID = categoryId,
                     DateStart = DateTime.Now.AddDays(20 + i),
-                    DateEnd = DateTime.Now.AddDays(22 + i ),
+                    DateEnd = DateTime.Now.AddDays(22 + i),
                     Price = price,
                     Status = "PENDING",
                     Latitude = keaGeoLatitude,
                     Longitude = keaGeoLongitude,
-                  
+
                 };
 
                 await _repo.CreateJob(job);
@@ -57,7 +56,7 @@ namespace JobFinderAPI.Controllers
             };
 
             return true;
-          
+
         }
 
         // [Authorize]
@@ -81,7 +80,7 @@ namespace JobFinderAPI.Controllers
 
         [Route("pending/page")]
         [HttpGet]
-        public async Task<IHttpActionResult> GetPendingJobs(int  offset, int limit, string filter, bool orderByAscen)
+        public async Task<IHttpActionResult> GetPendingJobs(int userId,int offset, int limit, string filter, bool orderByAscen)
         {
 
             if (!ModelState.IsValid)
@@ -90,9 +89,27 @@ namespace JobFinderAPI.Controllers
             }
 
             // get the paged job with paging details
-            var pagedJobResult = await _repo.GetPendingJobs(offset, limit, filter, orderByAscen);
+            var pagedJobResult = await _repo.GetPendingJobs(userId, offset, limit, filter, orderByAscen);
 
             return Ok(pagedJobResult);
+        }
+
+        [Route("approved")]
+        [HttpGet]
+        public async Task<IHttpActionResult> GetApprovedJobsByUserId(int userId)
+        {
+            //var id = RequestContext.Principal.Identity.GetUserId();
+            //var name = RequestContext.Principal.Identity.Name;
+            //var id2 = User.Identity.GetUserId();
+            //var name2 = User.Identity.Name;
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            IQueryable jobs = await _repo.GetApprovedJobByUserId(userId);
+
+            return Ok(jobs);
         }
 
         // Get the created job by the job id in the db
@@ -121,7 +138,7 @@ namespace JobFinderAPI.Controllers
         }
 
 
-        
+
 
 
         [Route("created")]
@@ -134,7 +151,7 @@ namespace JobFinderAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-           //await generateFakeJobs();
+            //await generateFakeJobs();
 
             await _repo.CreateJob(job);
 
@@ -151,12 +168,21 @@ namespace JobFinderAPI.Controllers
         }
 
 
-        [Route("created")]
         // Delete a job created by employer
+        [Route("created")]
         [HttpDelete]
-        public async Task<IHttpActionResult> DeleteCreatedJob(int id)
+        public async Task<IHttpActionResult> DeleteCreatedJob(int jobId)
         {
-            return Ok("Updated job");
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            //await generateFakeJobs();
+
+            await _repo.DeleteJob(jobId);
+
+            return Ok("Job was deleted");
         }
 
 
