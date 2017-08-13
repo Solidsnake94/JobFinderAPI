@@ -265,6 +265,37 @@ namespace JobFinderAPI.Repositories
             }
         }
 
+        public async Task<bool> AcceptApplicant(int applicantId, int jobId)
+        {
+            try
+            {
+                var oldJob = dbContext.Jobs.SingleOrDefault(j => j.Id == jobId);
+                if (oldJob != null && oldJob.Status != "APPROVED")
+                {
+                    oldJob.Status = "APPROVED";
+                    var applicant = dbContext.JobsApplications.SingleOrDefault(a => a.ApplicantId == applicantId && a.JobId == jobId);
+
+                    if (applicant != null)
+                    {
+                        applicant.Status = "APPROVED";
+                    }
+                    await dbContext.SaveChangesAsync();
+
+
+                    dbContext.JobsApplications.RemoveRange(dbContext.JobsApplications.Where(j => j.JobId == jobId && j.Status == "PENDING"));
+                }
+
+
+
+                await dbContext.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
         // ====== END JOB_APPLICATION METHODS =================
 
 

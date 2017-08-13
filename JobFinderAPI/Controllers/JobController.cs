@@ -1,6 +1,5 @@
 ﻿using JobFinderAPI.Entities;
 using JobFinderAPI.Repositories;
-using Microsoft.AspNet.Identity;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -265,7 +264,26 @@ namespace JobFinderAPI.Controllers
             }
         }
 
+        [Route("application/accept")]
+        [HttpPost]
+        public async Task<IHttpActionResult> AcceptJobApplicant(int applicantId , int jobId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
+            var success = await _repo.AcceptApplicant(applicantId, jobId);
+
+            if (success)
+            {
+                return Ok("Applicant Accepted ");
+            }
+            else
+            {
+                return BadRequest("Failed to create a new job application");
+            }
+        }
 
     }
 }
