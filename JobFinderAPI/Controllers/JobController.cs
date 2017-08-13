@@ -1,5 +1,6 @@
 ﻿using JobFinderAPI.Entities;
 using JobFinderAPI.Repositories;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -59,6 +60,20 @@ namespace JobFinderAPI.Controllers
 
         }
 
+        // api/jobs?jobId=11
+        [Route("")]
+        public async Task<IHttpActionResult> GetJobDetails(int jobId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var job = _repo.GetJobDetails(jobId);
+
+            return Ok(job);
+        }
+
         // [Authorize]
         [Route("pending")]
         [HttpGet]
@@ -80,7 +95,7 @@ namespace JobFinderAPI.Controllers
 
         [Route("pending/page")]
         [HttpGet]
-        public async Task<IHttpActionResult> GetPendingJobs(int userId,int offset, int limit, string filter, bool orderByAscen)
+        public async Task<IHttpActionResult> GetPendingJobs(int userId, int offset, int limit, string filter, bool orderByAscen)
         {
 
             if (!ModelState.IsValid)
@@ -211,6 +226,20 @@ namespace JobFinderAPI.Controllers
             }
 
             var jobApplications = await _repo.GetJobApplicationsForApplicant(applicantId);
+
+            return Ok(jobApplications);
+        }
+
+        [Route("application")]
+        [HttpGet]
+        public async Task<IHttpActionResult> GetJobApplicationsBasedOnStatus(string status)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var jobApplications = await _repo.GetJobApplicationsBasedOnStatus(status);
 
             return Ok(jobApplications);
         }

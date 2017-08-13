@@ -19,6 +19,19 @@ namespace JobFinderAPI.Repositories
 
         // ====== JOB METHODS
 
+        public async Task<Job> GetJobDetails(int jobId)
+        {
+            try
+            {
+                var job = dbContext.Jobs.SingleOrDefault(j => j.Id == jobId);
+                return job;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
         public async Task<IQueryable<Job>> GetAllPendingJobs()
         {
             try
@@ -177,6 +190,20 @@ namespace JobFinderAPI.Repositories
                 throw e;
             }
         }
+
+        public async Task<IQueryable<JobApplication>> GetJobApplicationsBasedOnStatus(string status)
+        {
+            try
+            {
+                var applications = dbContext.JobsApplications.Where(j => j.Status == status);
+                return applications;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
 
         public async Task<bool> CreateJobApplication(int jobId, int jobApplicationUserId)
         {

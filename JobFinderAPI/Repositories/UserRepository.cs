@@ -3,6 +3,7 @@ using JobFinderAPI.Models;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Http;
 
 namespace JobFinderAPI.Repositories
 {
@@ -55,5 +56,19 @@ namespace JobFinderAPI.Repositories
             }
 
         }
+
+        public async Task<UserDetail> GetAuthenticatedUser(string aspUserId) {
+
+            try
+            {
+                var user = dbContext.UsersDetails.SingleOrDefault(j => j.UserId == aspUserId);
+                return user;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
     }
 }
