@@ -187,19 +187,19 @@ namespace JobFinderAPI.Controllers
 
 
 
-        [Route("application")]
-        [HttpGet]
-        public async Task<IHttpActionResult> GetJobApplicationsForJobOwner(int jobId)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //[Route("application/job")]
+        //[HttpGet]
+        //public async Task<IHttpActionResult> GetJobApplicationsForJobOwner(int jobId)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            var jobApplications = await _repo.GetJobApplicationsForJobOwner(jobId);
+        //    var jobApplications = await _repo.GetJobApplicationsForJobOwner(jobId);
 
-            return Ok(jobApplications);
-        }
+        //    return Ok(jobApplications);
+        //}
 
         [Route("application/applicant")]
         [HttpGet]
@@ -215,6 +215,8 @@ namespace JobFinderAPI.Controllers
             return Ok(jobApplications);
         }
 
+        [Route("application/create")]
+        [HttpPost]
         public async Task<IHttpActionResult> CreateJobApplication(JobApplication jobApplication)
         {
             if (!ModelState.IsValid)

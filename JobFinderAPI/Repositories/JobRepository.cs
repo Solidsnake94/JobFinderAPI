@@ -155,7 +155,8 @@ namespace JobFinderAPI.Repositories
         {
             try
             {
-                var applications = dbContext.JobsApplications.Where(j => j.ApplicantId == applicantId);
+
+                IQueryable<JobApplication> applications = dbContext.JobsApplications.Where(j => j.ApplicantId == applicantId);
                 return applications;
             }
             catch (Exception e)
