@@ -168,7 +168,8 @@ namespace JobFinderAPI.Repositories
         {
             try
             {
-                var applications = dbContext.JobsApplications.Where(j => j.ApplicantId == applicantId);
+
+                IQueryable<JobApplication> applications = dbContext.JobsApplications.Where(j => j.ApplicantId == applicantId);
                 return applications;
             }
             catch (Exception e)
@@ -182,7 +183,7 @@ namespace JobFinderAPI.Repositories
         {
             try
             {
-                var applications = dbContext.JobsApplications.Where(j => j.JobId == jobId);
+                IQueryable<JobApplication> applications = dbContext.JobsApplications.Where(j => j.JobId == jobId);
                 return applications;
             }
             catch (Exception e)
@@ -195,7 +196,7 @@ namespace JobFinderAPI.Repositories
         {
             try
             {
-                var applications = dbContext.JobsApplications.Where(j => j.Status == status);
+                IQueryable<JobApplication> applications = dbContext.JobsApplications.Where(j => j.Status == status);
                 return applications;
             }
             catch (Exception e)

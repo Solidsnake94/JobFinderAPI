@@ -202,7 +202,7 @@ namespace JobFinderAPI.Controllers
 
 
 
-        [Route("application")]
+        [Route("application/job")]
         [HttpGet]
         public async Task<IHttpActionResult> GetJobApplicationsForJobOwner(int jobId)
         {
@@ -244,6 +244,8 @@ namespace JobFinderAPI.Controllers
             return Ok(jobApplications);
         }
 
+        [Route("application/create")]
+        [HttpPost]
         public async Task<IHttpActionResult> CreateJobApplication(JobApplication jobApplication)
         {
             if (!ModelState.IsValid)

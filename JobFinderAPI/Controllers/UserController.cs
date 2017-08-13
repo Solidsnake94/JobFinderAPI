@@ -12,7 +12,8 @@ namespace JobFinderAPI.Controllers
 
 
         // The method returns the authenticated user, logged in one, based on the token used for authentication
-        [Authorize]
+        
+        [Route("userId")]
         public async Task<IHttpActionResult> GetAuthenticatedUser()
         {
             if (!ModelState.IsValid)
