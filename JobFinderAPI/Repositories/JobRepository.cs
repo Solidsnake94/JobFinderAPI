@@ -170,7 +170,7 @@ namespace JobFinderAPI.Repositories
         {
             try
             {
-                var applications = dbContext.JobsApplications.Where(j => j.JobId == jobId);
+                IQueryable<JobApplication> applications = dbContext.JobsApplications.Where(j => j.JobId == jobId);
                 return applications;
             }
             catch (Exception e)
