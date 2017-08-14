@@ -18,10 +18,10 @@ namespace JobFinderAPI.Controllers
             ConverterSoapClient converter = new ConverterSoapClient();
             if (fromCurrency == "EUR")
             {
-                return (converter.GetCurrencyRate(toCurrency, DateTime.Now)) * amount;
+                return (converter.GetCurrencyRate(toCurrency, new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day))) * amount;
             }
             else
-                return (converter.GetCurrencyRate(fromCurrency, DateTime.Now)) / amount;
+                return (converter.GetCurrencyRate(fromCurrency, new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day))) / amount;
         }
 
     }
