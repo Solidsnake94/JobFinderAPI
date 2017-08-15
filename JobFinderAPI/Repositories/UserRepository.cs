@@ -3,7 +3,6 @@ using JobFinderAPI.Models;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web.Http;
 
 namespace JobFinderAPI.Repositories
 {
@@ -61,7 +60,7 @@ namespace JobFinderAPI.Repositories
 
             try
             {
-                var user = dbContext.UsersDetails.SingleOrDefault(j => j.UserId == aspUserId);
+                var user = dbContext.UsersDetails.SingleOrDefault(j => j.Username == aspUserId);
                 return user;
             }
             catch (Exception e)

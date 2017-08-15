@@ -12,18 +12,20 @@ namespace JobFinderAPI.Controllers
 
 
         // The method returns the authenticated user, logged in one, based on the token used for authentication
+
         
         [Route("userId")]
-        public async Task<IHttpActionResult> GetAuthenticatedUser()
+        [HttpGet]
+        public async Task<IHttpActionResult> GetAuthenticatedUser(string userName)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var aspUserId = RequestContext.Principal.Identity.GetUserId();
-            
-            var user = await _repo.GetAuthenticatedUser(aspUserId);
+         
+
+            var user = await _repo.GetAuthenticatedUser(userName);
 
             return Ok(user);
         }
@@ -44,7 +46,7 @@ namespace JobFinderAPI.Controllers
             return Ok(user);
         }
 
-        
+
 
     }
 }
